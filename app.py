@@ -1,10 +1,19 @@
 import os
-from dotenv import load_dotenv
 from openai import OpenAI
 
-# .env dosyasından API key'i yükle
-load_dotenv()
-client = OpenAI(api_key=os.getenv("OPENAI_API_KEY"))
+# Streamlit Cloud secrets'tan ya da local .env'den API key al
+# Streamlit Cloud'da st.secrets kullanılıyor, local'de .env
+try:
+    # Streamlit Cloud için
+    import streamlit as st
+    api_key = st.secrets["OPENAI_API_KEY"]
+except:
+    # Local için (.env dosyasından)
+    from dotenv import load_dotenv
+    load_dotenv()
+    api_key = os.getenv("OPENAI_API_KEY")
+
+client = OpenAI(api_key=api_key)
 
 def generate_description(product_name, features, word_count=150, tone="profesyonel"):
     """
